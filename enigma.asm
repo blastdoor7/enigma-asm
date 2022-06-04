@@ -781,7 +781,6 @@ _start:
   ROTOR_LEFT:   dd 0,0,0,0,0  
   REFLECTOR:    dd 0
 
-
 file_size equ $ - $$
 
 ABSOLUTE $
