@@ -303,37 +303,30 @@ _start:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov bl, byte ROTOR_RIGHT[ROTOR_SEL_IDX]
     mov ecx,rotor_array[4*ebx]
-
     push eax
     mov al,byte ROTOR_RIGHT[ROTOR_WP_IDX]
     mov dl,byte ROTOR_RIGHT[ROTOR_RS_IDX]
     call delta_mod_26
     mov dl,al
     pop eax
-    
     add eax,edx 
     call modulo_26 
     push edx       
     mov dl,byte ecx[eax] 
     mov al,dl
     pop edx       
-
     call delta_mod_26
-
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     push eax
-    xor eax,eax
     mov al, byte ROTOR_MIDDLE[ROTOR_SEL_IDX]
     mov ecx,rotor_array[4*eax]
     pop eax
-
     push eax
     mov al,byte ROTOR_MIDDLE[ROTOR_WP_IDX]
     mov dl,byte ROTOR_MIDDLE[ROTOR_RS_IDX]     
     call delta_mod_26 
-
     mov dl,al 
     pop eax
     add eax,edx
@@ -342,9 +335,7 @@ _start:
     mov edx,ecx[eax] 
     mov al,dl
     pop edx
-
     call delta_mod_26
-
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
