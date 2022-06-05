@@ -309,13 +309,7 @@ _start:
     call delta_mod_26
     mov dl,al
     pop eax
-    add eax,edx 
-    call modulo_26 
-    push edx       
-    mov dl,byte ecx[eax] 
-    mov al,dl
-    pop edx       
-    call delta_mod_26
+    call rotor_permute
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -327,35 +321,19 @@ _start:
     call delta_mod_26 
     mov dl,al 
     pop eax
-    add eax,edx
-    call modulo_26
-    push edx
-    mov edx,ecx[eax] 
-    mov al,dl
-    pop edx
-    call delta_mod_26
+    call rotor_permute
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov bl, byte ROTOR_LEFT[ROTOR_SEL_IDX]
     mov ecx,rotor_array[4*ebx]
-
     push eax
     mov al,byte ROTOR_LEFT[ROTOR_WP_IDX]
     mov dl,byte ROTOR_LEFT[ROTOR_RS_IDX]      
     call delta_mod_26 
     mov dl,al
     pop eax
-
-    add eax,edx
-    call modulo_26
-    push edx
-    mov edx,ecx[eax] 
-    mov al,dl
-    pop edx
-
-    call delta_mod_26 
-
+    call rotor_permute 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; reflector
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -378,13 +356,7 @@ _start:
     call delta_mod_26
     mov dl,al 
     pop eax
-    add eax,edx 
-    call modulo_26 
-    push edx       
-    mov dl,byte ecx[eax] 
-    mov al,dl
-    pop edx       
-    call delta_mod_26  
+    call rotor_permute  
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -396,13 +368,7 @@ _start:
     call delta_mod_26  
     mov dl,al 
     pop eax
-    add eax,edx
-    call modulo_26
-    push edx
-    mov edx,ecx[eax] 
-    mov al,dl
-    pop edx
-    call delta_mod_26  
+    call rotor_permute  
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; right rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -414,6 +380,16 @@ _start:
     call delta_mod_26
     mov dl,al 
     pop eax
+    call rotor_permute
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    mov bl,byte PLUGBOARD[eax]
+    mov al,bl
+
+    process_char_ret:
+    ret
+
+  rotor_permute:
     add eax,edx  
     call modulo_26 
     push edx       
@@ -421,12 +397,6 @@ _start:
     mov al,dl
     pop edx       
     call delta_mod_26
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    mov bl,byte PLUGBOARD[eax]
-    mov al,bl
-
-    process_char_ret:
     ret
 
   step_rotors:
