@@ -402,31 +402,25 @@ _start:
   step_rotors:
     push eax
     mov al,byte ROTOR_RIGHT[ROTOR_WP_IDX] 
-
     cmp al,byte ROTOR_RIGHT[ROTOR_STEP1_IDX]
     je step_rotors_middle
-    step_right_ret:
-   
+    step_rotors_right:
     inc eax
     call modulo_26
     mov byte ROTOR_RIGHT[ROTOR_WP_IDX],al 
     pop eax
     jmp step_rotors_ret
-    
     step_rotors_middle:
     push eax
     mov al,byte ROTOR_MIDDLE[ROTOR_WP_IDX] 
-
     cmp al,byte ROTOR_MIDDLE[ROTOR_STEP1_IDX]
     je step_rotors_left
     step_middle_ret:
-   
     inc eax
     call modulo_26
     mov byte ROTOR_MIDDLE[ROTOR_WP_IDX],al 
     pop eax
-    jmp step_right_ret
-
+    jmp step_rotors_right
     step_rotors_left:
     push eax
     mov al,byte ROTOR_LEFT[ROTOR_WP_IDX] 
@@ -435,7 +429,6 @@ _start:
     mov byte ROTOR_LEFT[ROTOR_WP_IDX],al 
     pop eax
     jmp step_middle_ret
-
     step_rotors_ret:
     ret
 
