@@ -417,11 +417,9 @@ _start:
     push eax
     mov al,byte ROTOR_MIDDLE[ROTOR_WP_IDX] 
 
-      push eax
-      cmp al,byte ROTOR_MIDDLE[ROTOR_STEP1_IDX]
-      je step_rotors_left
-      step_middle_ret:
-      pop eax
+    cmp al,byte ROTOR_MIDDLE[ROTOR_STEP1_IDX]
+    je step_rotors_left
+    step_middle_ret:
    
     inc eax
     call modulo_26
