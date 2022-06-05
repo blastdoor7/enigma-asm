@@ -421,6 +421,8 @@ _start:
     mov al,dl
     pop edx       
     call delta_mod_26
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
     mov bl,byte PLUGBOARD[eax]
     mov al,bl
 
