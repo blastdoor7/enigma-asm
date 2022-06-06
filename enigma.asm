@@ -326,7 +326,7 @@ _start:
     ; reflector
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov bl, byte REFLECTOR[0]
-    mov ecx,reflector_array[ebx]
+    mov ecx,REFLECTOR_ARRAY[ebx]
 
     mov dl,byte ecx[eax] 
     mov al,dl      
@@ -675,7 +675,7 @@ _start:
   ROTOR_VII_STEPS:  db  25,12   ; 'AN'
   ROTOR_VIII_STEPS: db  25,12   ; 'AN'
   
-  reflector_array: dd REFLECTOR_B, REFLECTOR_C, REFLECTOR_B_thin, REFLECTOR_C_thin
+  REFLECTOR_ARRAY: dd REFLECTOR_B, REFLECTOR_C, REFLECTOR_B_thin, REFLECTOR_C_thin
   REFLECTOR_NAME_B:    db 'B'
   REFLECTOR_NAME_C:    db 'C'
   REFLECTOR_NAMES_END: db  0 
