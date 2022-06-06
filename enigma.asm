@@ -369,7 +369,7 @@ _start:
     mov ebx, dword ROTORS[edx]  ; select the rotor state
     push eax
     mov al, byte ebx[ROTOR_SEL_IDX]
-    mov edx,dword rotor_arrays[4*ecx]
+    mov edx,dword ROTOR_ARRAYS[4*ecx]
     mov ecx,dword edx[4*eax]
     mov al,byte ebx[ROTOR_WP_IDX]
     mov dl,byte ebx[ROTOR_RS_IDX]
@@ -681,8 +681,9 @@ _start:
   REFLECTOR_NAMES_END: db  0 
   REFLECTOR_NAMES: dd REFLECTOR_NAME_B,REFLECTOR_NAME_C,REFLECTOR_NAMES_END
 
-  rotor_array: dd ROTOR_I,ROTOR_II,ROTOR_III,ROTOR_IV,ROTOR_V,ROTOR_VI,ROTOR_VII,ROTOR_VIII
-  rotor_rev_array: dd ROTOR_I_REV,ROTOR_II_REV,ROTOR_III_REV,ROTOR_IV_REV,ROTOR_V_REV,ROTOR_VI_REV,ROTOR_VII_REV,ROTOR_VIII_REV
+  ROTOR_ARRAY: dd ROTOR_I,ROTOR_II,ROTOR_III,ROTOR_IV,ROTOR_V,ROTOR_VI,ROTOR_VII,ROTOR_VIII
+  ROTOR_REV_ARRAY: dd ROTOR_I_REV,ROTOR_II_REV,ROTOR_III_REV,ROTOR_IV_REV,ROTOR_V_REV,ROTOR_VI_REV,ROTOR_VII_REV,ROTOR_VIII_REV
+
   steps_array: dd ROTOR_I_STEPS,ROTOR_II_STEPS,ROTOR_III_STEPS,ROTOR_IV_STEPS,ROTOR_V_STEPS,ROTOR_VI_STEPS,ROTOR_VII_STEPS,ROTOR_VIII_STEPS
 
   errmsg0: db 'ERROR : ',10,0
@@ -694,8 +695,8 @@ _start:
   ROTOR_LEFT:   dd 0,0,0,0,0  
   REFLECTOR:    dd 0
 
-  rotor_arrays: dd rotor_array,rotor_rev_array
-  ROTORS: dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
+  ROTOR_ARRAYS: dd ROTOR_ARRAY,ROTOR_REV_ARRAY
+  ROTORS:       dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
 
 file_size equ $ - $$
 
