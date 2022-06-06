@@ -408,28 +408,23 @@ _start:
 
   modulo_26:
     push edx
-   
     xor edx,edx
     mov ebx,26
     div ebx
     mov eax,edx
-
     pop edx
     ret
 
   validate_plugboard: ; maximum of ten pairs, all uppercase
     push ebx
-
     xor ebx,ebx
     xor edx,edx
     validate_plugboard_loop:
       mov al,byte [ecx+edx]
       cmp al,0x0
       je validate_plugboard_check_pairs
-     
       cmp al,32
       je validate_plugboard_continue
- 
       cmp al,65
       jl validate_plugboard_error
       cmp al,90
@@ -437,11 +432,9 @@ _start:
       inc ebx
       cmp ebx,20
       jg validate_plugboard_error
-
       validate_plugboard_continue:
       inc edx
       jmp validate_plugboard_loop
-
     validate_plugboard_check_pairs:
     xor edx,edx
     xor eax,eax
@@ -452,24 +445,20 @@ _start:
     jne validate_plugboard_error
     xor eax,eax
     jmp validate_plugboard_ret
-    
     validate_plugboard_error:
       mov eax,ERROR_USAGE
-   
     validate_plugboard_ret:
     pop ebx
     ret
 
   validate_triad:
     xor edx,edx
-    xor eax,eax
     validate_triad_loop:
       mov al,byte [ecx+edx]
       cmp al,0x0
       je validate_triad_break
       inc edx
       jmp validate_triad_loop
-
     validate_triad_break:
       cmp edx,3
       jl validate_triad_error
