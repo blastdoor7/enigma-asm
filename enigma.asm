@@ -301,39 +301,18 @@ _start:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; right rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov bl, byte ROTOR_RIGHT[ROTOR_SEL_IDX]
-    mov ecx,rotor_array[4*ebx]
-    push eax
-    mov al,byte ROTOR_RIGHT[ROTOR_WP_IDX]
-    mov dl,byte ROTOR_RIGHT[ROTOR_RS_IDX]
-    call delta_mod_26
-    mov dl,al
-    pop eax
-    call rotor_permute
+    mov dl,8
+    call rotor_permute_
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov bl, byte ROTOR_MIDDLE[ROTOR_SEL_IDX]
-    mov ecx,rotor_array[4*ebx]
-    push eax
-    mov al,byte ROTOR_MIDDLE[ROTOR_WP_IDX]
-    mov dl,byte ROTOR_MIDDLE[ROTOR_RS_IDX]     
-    call delta_mod_26 
-    mov dl,al 
-    pop eax
-    call rotor_permute
+    mov dl,4
+    call rotor_permute_
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov bl, byte ROTOR_LEFT[ROTOR_SEL_IDX]
-    mov ecx,rotor_array[4*ebx]
-    push eax
-    mov al,byte ROTOR_LEFT[ROTOR_WP_IDX]
-    mov dl,byte ROTOR_LEFT[ROTOR_RS_IDX]      
-    call delta_mod_26 
-    mov dl,al
-    pop eax
-    call rotor_permute 
+    mov dl,0
+    call rotor_permute_
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; reflector
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -387,6 +366,25 @@ _start:
     mov al,bl
 
     process_char_ret:
+    ret
+
+  rotor_permute_:
+    mov ebx, dword ROTORS[edx]  ; select the rotor state
+    push eax
+    mov al, byte ebx[ROTOR_SEL_IDX]
+    mov ecx,rotor_array[4*eax]
+    mov al,byte ebx[ROTOR_WP_IDX]
+    mov dl,byte ebx[ROTOR_RS_IDX]
+    call delta_mod_26
+    mov dl,al
+    pop eax
+    add eax,edx  
+    call modulo_26 
+    push edx       
+    mov dl,byte ecx[eax]  
+    mov al,dl
+    pop edx       
+    call delta_mod_26
     ret
 
   rotor_permute:
@@ -702,11 +700,13 @@ _start:
   errmsg0: db 'ERROR : ',10,0
   errmsg1: db 'Usage : e.g. 012 B "AX BY" DCB AAA INPUTTEXT',10,0
   errmsg_array: dd errmsg0,errmsg1
-  
+
   ROTOR_RIGHT:  dd 0,0,0,0,0
   ROTOR_MIDDLE: dd 0,0,0,0,0
   ROTOR_LEFT:   dd 0,0,0,0,0  
   REFLECTOR:    dd 0
+
+  ROTORS: dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
 
 file_size equ $ - $$
 
