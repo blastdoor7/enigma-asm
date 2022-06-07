@@ -188,14 +188,33 @@ _start:
   mov al,byte ecx[2]
   sub al,0x30
   mov byte ROTOR_RIGHT[ROTOR_SEL_IDX],al 
-    
   mov al,ecx[1]
   sub al,0x30
   mov byte ROTOR_MIDDLE[ROTOR_SEL_IDX],al
-
   mov al,ecx[0]
   sub al,0x30
   mov byte ROTOR_LEFT[ROTOR_SEL_IDX],al
+  mov ecx,dword [ebp-12]
+  mov al,ecx[2]
+  sub al,0x41
+  mov byte ROTOR_RIGHT[ROTOR_RS_IDX],al  
+  mov al,ecx[1]
+  sub al,0x41  
+  mov byte ROTOR_MIDDLE[ROTOR_RS_IDX],al
+  mov al,ecx[0]
+  sub al,0x41   
+  mov byte ROTOR_LEFT[ROTOR_RS_IDX],al
+  mov ecx,dword [ebp-8]
+  mov al,ecx[2]
+  sub al,0x41  
+  mov byte ROTOR_RIGHT[ROTOR_WP_IDX],al     
+  mov al,ecx[1]
+  sub al,0x41   
+  mov byte ROTOR_MIDDLE[ROTOR_WP_IDX],al
+  mov al,ecx[0]
+  sub al,0x41   
+  mov byte ROTOR_LEFT[ROTOR_WP_IDX],al
+  popa
 
   mov ecx,dword [ebp-20]
   mov al,ecx[0]
@@ -214,30 +233,6 @@ _start:
   config_reflector_loop_break:
   popa
 
-  mov ecx,dword [ebp-12]
-  mov al,ecx[2]
-  sub al,0x41
-  mov byte ROTOR_RIGHT[ROTOR_RS_IDX],al  
-
-  mov al,ecx[1]
-  sub al,0x41  
-  mov byte ROTOR_MIDDLE[ROTOR_RS_IDX],al
-
-  mov al,ecx[0]
-  sub al,0x41   
-  mov byte ROTOR_LEFT[ROTOR_RS_IDX],al
-
-  mov ecx,dword [ebp-8]
-  mov al,ecx[2]
-  sub al,0x41  
-  mov byte ROTOR_RIGHT[ROTOR_WP_IDX],al     
-  mov al,ecx[1]
-  sub al,0x41   
-  mov byte ROTOR_MIDDLE[ROTOR_WP_IDX],al
-  mov al,ecx[0]
-  sub al,0x41   
-  mov byte ROTOR_LEFT[ROTOR_WP_IDX],al
-  popa
 
   mov dl,byte ROTOR_III_STEPS[0]
   mov byte ROTOR_RIGHT[ROTOR_STEP1_IDX],dl
@@ -273,7 +268,6 @@ _start:
       popa 
       inc edx
       jmp process_char_loop
-
     process_input_ret:
     ret
 
@@ -290,7 +284,6 @@ _start:
       jmp delta_mod_26_ret
     delta_mod_26_subtract:
       sub al,dl
-   
     delta_mod_26_ret:
     ret 
 
@@ -346,7 +339,6 @@ _start:
     mov edx,8
     call rotor_permute
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
     mov bl,byte PLUGBOARD[eax]
     mov al,bl
 
