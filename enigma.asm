@@ -437,7 +437,6 @@ _start:
       jmp validate_plugboard_loop
     validate_plugboard_check_pairs:
     xor edx,edx
-    xor eax,eax
     mov eax,ebx
     mov ebx,2
     div ebx
