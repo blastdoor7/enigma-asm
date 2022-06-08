@@ -602,18 +602,6 @@ _start:
     mov eax,1
     int 0x80
 
-  ;configure_rotors_:
-  ;  mov al,ecx[2]
-  ;  sub al,dl  
-  ;  mov byte ROTOR_RIGHT[ebx],al     
-  ;  mov al,ecx[1]
-  ;  sub al,dl   
-  ;  mov byte ROTOR_MIDDLE[ebx],al
-  ;  mov al,ecx[0]
-  ;  sub al,65   
-  ;  mov byte ROTOR_LEFT[ebx],al
-  ;ret
-
   ; test value 432 B "AY BX DE FG QZ HP MW RS JV UT" CBA AAA ABCDEFGHIJKLMNOPQRSTUVWXYZ
   ; expected output :  PNORAUPMEWYUIFEZNEHEZWEUBU
 
@@ -659,6 +647,7 @@ _start:
   REFLECTOR_NAMES_END: db  0 
   REFLECTOR_NAMES: dd REFLECTOR_NAME_B,REFLECTOR_NAME_C,REFLECTOR_NAMES_END
 
+  TEST_VAR: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ; test padding 
   ROTOR_ARRAY:     dd ROTOR_I,ROTOR_II,ROTOR_III,ROTOR_IV,ROTOR_V,ROTOR_VI,ROTOR_VII,ROTOR_VIII
   ROTOR_REV_ARRAY: dd ROTOR_I_REV,ROTOR_II_REV,ROTOR_III_REV,ROTOR_IV_REV,ROTOR_V_REV,ROTOR_VI_REV,ROTOR_VII_REV,ROTOR_VIII_REV
   STEPS_ARRAY:     dd ROTOR_I_STEPS,ROTOR_II_STEPS,ROTOR_III_STEPS,ROTOR_IV_STEPS,ROTOR_V_STEPS,ROTOR_VI_STEPS,ROTOR_VII_STEPS,ROTOR_VIII_STEPS
@@ -675,19 +664,15 @@ _start:
   ROTOR_ARRAYS: dd ROTOR_ARRAY,ROTOR_REV_ARRAY
   ROTORS:       dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
 
+  ROTOR_SEL_IDX                   equ   0
+  ROTOR_RS_IDX                    equ   1
+  ROTOR_WP_IDX                    equ   2
+  ROTOR_STEP1_IDX                 equ   3
+  ROTOR_STEP2_IDX                 equ   4
+  ERROR_USAGE                     equ   4
+
 file_size equ $ - $$
-
 ABSOLUTE $
-
-UNIQUENESS_ARRAY: resb 90  
-
-ROTOR_SEL_IDX                   equ   0
-ROTOR_RS_IDX                    equ   1
-ROTOR_WP_IDX                    equ   2
-ROTOR_STEP1_IDX                 equ   3
-ROTOR_STEP2_IDX                 equ   4
-
-ERROR_USAGE                     equ   4
-
+  ALIGNB 4
+  UNIQUENESS_ARRAY: resb 90
 mem_size equ $ - $$
-
