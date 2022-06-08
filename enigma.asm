@@ -185,35 +185,20 @@ _start:
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   pusha
   mov ecx,dword [ebp-24]
-  mov al,byte ecx[2]
-  sub al,0x30
-  mov byte ROTOR_RIGHT[ROTOR_SEL_IDX],al 
-  mov al,ecx[1]
-  sub al,0x30
-  mov byte ROTOR_MIDDLE[ROTOR_SEL_IDX],al
-  mov al,ecx[0]
-  sub al,0x30
-  mov byte ROTOR_LEFT[ROTOR_SEL_IDX],al
+  mov dl,48
+  mov bl,ROTOR_SEL_IDX
+  call configure_rotors
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   mov ecx,dword [ebp-12]
-  mov al,ecx[2]
-  sub al,0x41
-  mov byte ROTOR_RIGHT[ROTOR_RS_IDX],al  
-  mov al,ecx[1]
-  sub al,0x41  
-  mov byte ROTOR_MIDDLE[ROTOR_RS_IDX],al
-  mov al,ecx[0]
-  sub al,0x41   
-  mov byte ROTOR_LEFT[ROTOR_RS_IDX],al
+  mov dl,65
+  mov bl,ROTOR_RS_IDX
+  call configure_rotors
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   mov ecx,dword [ebp-8]
-  mov al,ecx[2]
-  sub al,0x41  
-  mov byte ROTOR_RIGHT[ROTOR_WP_IDX],al     
-  mov al,ecx[1]
-  sub al,0x41   
-  mov byte ROTOR_MIDDLE[ROTOR_WP_IDX],al
-  mov al,ecx[0]
-  sub al,0x41   
-  mov byte ROTOR_LEFT[ROTOR_WP_IDX],al
+  mov dl,65
+  mov bl,ROTOR_WP_IDX
+  call configure_rotors
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   popa
 
   mov ecx,dword [ebp-20]
@@ -252,6 +237,8 @@ _start:
   mov ecx,[ebp-4]
   call process_input
   jmp exit
+
+
 
   process_input:
     xor edx,edx
@@ -596,6 +583,18 @@ _start:
     popa
     ret
 
+  configure_rotors:
+    mov al,ecx[2]
+    sub al,dl
+    mov byte ROTOR_RIGHT[ebx],al 
+    mov al,ecx[1]
+    sub al,dl
+    mov byte ROTOR_MIDDLE[ebx],al
+    mov al,ecx[0]
+    sub al,dl
+    mov byte ROTOR_LEFT[ebx],al
+    ret
+
   exit:
     mov esp,ebp
     pop ebp
@@ -603,12 +602,23 @@ _start:
     mov eax,1
     int 0x80
 
+  ;configure_rotors_:
+  ;  mov al,ecx[2]
+  ;  sub al,dl  
+  ;  mov byte ROTOR_RIGHT[ebx],al     
+  ;  mov al,ecx[1]
+  ;  sub al,dl   
+  ;  mov byte ROTOR_MIDDLE[ebx],al
+  ;  mov al,ecx[0]
+  ;  sub al,65   
+  ;  mov byte ROTOR_LEFT[ebx],al
+  ;ret
+
   ; test value 432 B "AY BX DE FG QZ HP MW RS JV UT" CBA AAA ABCDEFGHIJKLMNOPQRSTUVWXYZ
   ; expected output :  PNORAUPMEWYUIFEZNEHEZWEUBU
 
   ; default - identity, gets configured with supplied plug board
   PLUGBOARD:        db 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
-
   REFLECTOR_B:      db 24,17,20,7,16,18,11,3,15,23,13,6,14,10,12,8,4,1,5,25,2,22,21,9,0,19
   REFLECTOR_C:      db 5,21,15,9,8,0,14,24,4,3,17,25,23,22,6,2,19,10,20,16,18,1,13,12,7,11
   REFLECTOR_B_thin: db 4,13,10,16,0,20,24,22,9,8,2,14,15,1,11,12,3,23,25,21,5,19,7,17,6,18
