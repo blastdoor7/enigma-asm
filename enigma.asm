@@ -496,6 +496,7 @@ _start:
   ROTORS:       dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
   alignb 4
 
+  padding_constants: db 88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88
   ROTOR_SEL_IDX                   equ   0
   alignb 4
   ROTOR_RS_IDX                    equ   1
