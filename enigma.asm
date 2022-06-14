@@ -89,73 +89,21 @@ _start:
   ; =================================
   ; validate the rotor selection list
   ; =================================
-  mov ecx,dword [ebp-24]
-  call validate_triad
-  cmp eax,0
-  jne error
-
-  call allunique
-  cmp eax,0
-  jne error
-
-  call validate_rotors
-  cmp eax,0
-  jne error
-
   ; =================================
   ; validate the reflector argument 
   ; =================================
-  mov ecx,dword [ebp-20]
-  call validate_reflector
-  cmp eax,0
-  jne error
-
   ; =================================
   ; validate the plug board argument 
   ; =================================
-  mov ecx,dword [ebp-16]
-  call validate_uppercase
-  cmp eax,0
-  jne error
-  call allunique
-  cmp eax,0
-  jne error
-  call validate_plugboard
-  cmp eax,0
-  jne error
-
   ; =================================
   ; validate the ring setting 
   ; =================================
-  mov ecx,dword [ebp-12]
-  call validate_uppercase
-  cmp eax,0
-  jne error
-
-  call validate_triad
-  cmp eax,0
-  jne error
-
   ; =================================
   ; validate the message setting 
   ; =================================
-  mov ecx,dword [ebp-8]
-  call validate_uppercase
-  cmp eax,0
-  jne error
-
-  call validate_triad
-  cmp eax,0
-  jne error
-
   ;=================================
   ;validate the message - uppercase
   ;=================================
-  mov ecx,dword [ebp-4]
-  call validate_uppercase
-  cmp eax,0
-  jne error
-
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Configure plug board 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -394,180 +342,6 @@ _start:
     pop edx
     ret
 
-  validate_plugboard: ; maximum of ten pairs, all uppercase
-    push ebx
-    xor ebx,ebx
-    xor edx,edx
-    validate_plugboard_loop:
-      mov al,byte [ecx+edx]
-      cmp al,0x0
-      je validate_plugboard_check_pairs
-      cmp al,32
-      je validate_plugboard_continue
-      cmp al,65
-      jl validate_plugboard_error
-      cmp al,90
-      jg validate_plugboard_error
-      inc ebx
-      cmp ebx,20
-      jg validate_plugboard_error
-      validate_plugboard_continue:
-      inc edx
-      jmp validate_plugboard_loop
-    validate_plugboard_check_pairs:
-    xor edx,edx
-    mov eax,ebx
-    mov ebx,2
-    div ebx
-    cmp dl,0
-    jne validate_plugboard_error
-    xor eax,eax
-    jmp validate_plugboard_ret
-    validate_plugboard_error:
-      mov eax,ERROR_USAGE
-    validate_plugboard_ret:
-    pop ebx
-    ret
-
-  validate_triad:
-    xor edx,edx
-    validate_triad_loop:
-      mov al,byte [ecx+edx]
-      cmp al,0x0
-      je validate_triad_break
-      inc edx
-      jmp validate_triad_loop
-    validate_triad_break:
-      cmp edx,3
-      jl validate_triad_error
-      cmp edx,3
-      jg validate_triad_error
-      jmp validate_triad_ret
-
-    validate_triad_error:
-      mov eax,ERROR_USAGE
-
-    validate_triad_ret:
-    ret
-
-  validate_rotors:
-    xor edx,edx
-    validate_rotors_loop:
-      mov al,byte [ecx+edx]
-      cmp al,0x0 
-      je validate_rotors_ret
-
-      cmp al,48
-      jl validate_rotors_error
-      cmp al,55
-      jg validate_rotors_error
-
-      inc edx
-      jmp validate_rotors_loop
-    validate_rotors_error:
-      mov eax,ERROR_USAGE
-    validate_rotors_ret: 
-    ret
-
-  validate_reflector:
-    xor edx,edx
-    validate_reflector_loop:
-      mov al,byte [ecx+edx]
-      cmp al,0x0
-      je validate_reflector_ret
-
-      cmp al,66
-      jl validate_reflector_error
-      cmp al,67
-      jg validate_reflector_error
-
-      validate_reflector_loop_next:
-      inc edx
-      cmp edx,1
-      jg validate_reflector_error
-
-      jmp validate_reflector_loop
-    validate_reflector_error:
-      mov eax,ERROR_USAGE
-    validate_reflector_ret: 
-    ret
-
-  validate_uppercase:
-    xor edx,edx
-    validate_uppercase_loop:
-      mov al,byte [ecx+edx]
-      cmp al,0x0
-      je validate_uppercase_ret
-
-      cmp al,32
-      je validate_uppercase_loop_next
-
-      cmp al,65
-      jl validate_uppercase_error
-      cmp al,90
-      jg validate_uppercase_error
-
-      validate_uppercase_loop_next:
-      inc edx
-      jmp validate_uppercase_loop
-    validate_uppercase_error:
-      mov eax,ERROR_USAGE
-    validate_uppercase_ret: 
-    ret
-
-  allunique:
-    mov al,byte [ecx] 
-    cmp al,0
-    je allunique_ret
-    
-    xor edx,edx
-    allunique_zero_array:
-      mov byte UNIQUENESS_ARRAY[edx],0
-      cmp edx,90
-      je allunique_zero_array_break
-      inc edx
-      jmp allunique_zero_array
-
-    allunique_zero_array_break:
-      xor edx,edx
-    allunique_scan:
-      mov al,byte [ecx+edx] 
-      cmp al,0
-      je allunique_ret
-      cmp al,32
-      je allunique_scan_continue
-      
-      cmp byte UNIQUENESS_ARRAY[eax],0
-      jne allunique_error
-      mov byte UNIQUENESS_ARRAY[eax],al
-      
-      allunique_scan_continue:
-        inc edx
-        jmp allunique_scan
-
-    allunique_error:
-      mov eax,ERROR_USAGE
-
-    allunique_ret:
-      ret
-
-  error:
-    call errormessage
-    jmp exit
-
-  errormessage:
-    mov ecx,[errmsg_array+eax]
-    xor edx,edx
-    loop2:
-      mov al,byte [ecx+edx]
-      cmp al,0x0
-      je errormessage_break
-      call printchar
-      inc edx
-      jmp loop2
-    errormessage_break:
-    ret
-
   printchar:
     pusha
     mov ebp,esp
@@ -601,7 +375,12 @@ _start:
     mov ebx,0
     mov eax,1
     int 0x80
-  
+ 
+  padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding1: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding2: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding3: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+
   ; test value 432 B "AY BX DE FG QZ HP MW RS JV UT" CBA AAA ABCDEFGHIJKLMNOPQRSTUVWXYZ
   ; expected output :  PNORAUPMEWYUIFEZNEHEZWEUBU
 
@@ -619,65 +398,115 @@ _start:
 
   ; forward rotor perms
   align 4
+  padding_rI: db 82,79,84,79,82,0,73,0,65,82,82,65,89,88,88,88 
   ROTOR_I:          db 4,10,12,5,11,6,3,16,21,25,13,19,14,22,24,7,23,20,18,15,0,8,1,17,2,9
   align 4
   ROTOR_II:         db 0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4
+  align 4
   ROTOR_III:        db 1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14
+  align 4
   ROTOR_IV:         db 4,18,14,21,15,25,9,0,24,16,20,8,17,7,23,11,13,5,19,6,10,3,2,12,22,1
+  align 4
   ROTOR_V:          db 21,25,1,17,6,8,19,24,20,15,18,3,13,7,11,23,0,22,12,9,16,14,5,4,2,10
+  align 4
   ROTOR_VI:         db 9,15,6,21,14,20,12,5,24,16,1,4,13,7,25,17,3,10,0,18,23,11,8,2,19,22
+  align 4
   ROTOR_VII:        db 13,25,9,7,6,17,2,23,12,24,18,22,1,14,20,5,0,8,21,11,15,5,10,16,3,19
+  align 4
   ROTOR_VIII:       db 5,10,16,7,19,11,23,14,2,1,9,18,15,3,25,17,0,12,4,22,13,8,20,24,6,21
+  align 4
 
   ; reverse rotor perms
   ROTOR_I_REV:      db 20,22,24,6,0,3,5,15,21,25,1,4,2,10,12,19,7,23,18,11,17,8,13,16,14,9
+  align 4
   ROTOR_II_REV:     db 0,9,15,2,25,22,17,11,5,1,3,10,14,19,24,20,16,6,4,13,7,23,12,8,21,18
+  align 4
   ROTOR_III_REV:    db 19,0,6,1,15,2,18,3,16,4,20,5,21,13,25,7,24,8,23,9,22,11,17,10,16,12
+  align 4
   ROTOR_IV_REV:     db 7,25,22,21,0,17,19,13,11,6,20,15,23,16,2,4,9,12,1,18,10,3,24,16,8,5
+  align 4
   ROTOR_V_REV:      db 16,2,24,11,23,22,4,13,5,19,25,16,18,12,21,9,20,3,10,6,8,0,17,15,7,1
+  align 4
   ROTOR_VI_REV:     db 18,10,23,16,11,7,2,13,22,0,17,21,6,12,4,1,9,15,19,24,5,3,25,20,8,14
+  align 4
   ROTOR_VII_REV:    db 16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1
+  align 4
   ROTOR_VIII_REV:   db 16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14
+  align 4
+  padding4: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding5: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding6: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding7: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
 
-  ROTOR_I_STEPS:    db     16 
-  ROTOR_II_STEPS:   db      4   ; 'F'
-  ROTOR_III_STEPS:  db     21   ; 'W'     'V' -> 'W' step with change to 'W'
-  ROTOR_IV_STEPS:   db      9   ; 'K'
-  ROTOR_V_STEPS:    db     25   ; 'A'
-  ROTOR_VI_STEPS:   db  25,12   ; 'AN'
-  ROTOR_VII_STEPS:  db  25,12   ; 'AN'
-  ROTOR_VIII_STEPS: db  25,12   ; 'AN'
   
   REFLECTOR_ARRAY: dd REFLECTOR_B, REFLECTOR_C, REFLECTOR_B_thin, REFLECTOR_C_thin
+
+  padding8: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding9: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding10: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding11: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  alignb 4
   REFLECTOR_NAME_B:    db 'B'
+  alignb 4
   REFLECTOR_NAME_C:    db 'C'
+  alignb 4
   REFLECTOR_NAMES_END: db  0
-  REFLECTOR_NAMES: dd REFLECTOR_NAME_B,REFLECTOR_NAME_C,REFLECTOR_NAMES_END,0
-
+  alignb 4
+  REFLECTOR_NAMES: dd REFLECTOR_NAME_B,REFLECTOR_NAME_C,REFLECTOR_NAMES_END
+  alignb 4
+   
+  padding12: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding13: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding14: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+  padding15: db 82,79,84,79,83,0,65,82,82,65,89,88,88,88,88,88 
   ROTOR_ARRAY:     dd ROTOR_I,ROTOR_II,ROTOR_III,ROTOR_IV,ROTOR_V,ROTOR_VI,ROTOR_VII,ROTOR_VIII
+  alignb 4
   ROTOR_REV_ARRAY: dd ROTOR_I_REV,ROTOR_II_REV,ROTOR_III_REV,ROTOR_IV_REV,ROTOR_V_REV,ROTOR_VI_REV,ROTOR_VII_REV,ROTOR_VIII_REV
+  alignb 4
   STEPS_ARRAY:     dd ROTOR_I_STEPS,ROTOR_II_STEPS,ROTOR_III_STEPS,ROTOR_IV_STEPS,ROTOR_V_STEPS,ROTOR_VI_STEPS,ROTOR_VII_STEPS,ROTOR_VIII_STEPS
-
-  errmsg0: db 'ERROR : ',10,0
-  errmsg1: db 'Usage : e.g. 012 B "AX BY" DCB AAA INPUTTEXT',10,0
-  errmsg_array: dd errmsg0,errmsg1
-
+  alignb 4
   ROTOR_RIGHT:  dd 0,0,0,0,0
+  alignb 4
   ROTOR_MIDDLE: dd 0,0,0,0,0
+  alignb 4
   ROTOR_LEFT:   dd 0,0,0,0,0  
+  alignb 4
   REFLECTOR:    dd 0
+  alignb 4
+  ROTOR_I_STEPS:    db     16 
+  alignb 4
+  ROTOR_II_STEPS:   db      4   ; 'F'
+  alignb 4
+  ROTOR_III_STEPS:  db     21   ; 'W'     'V' -> 'W' step with change to 'W'
+  alignb 4
+  ROTOR_IV_STEPS:   db      9   ; 'K'
+  alignb 4
+  ROTOR_V_STEPS:    db     25   ; 'A'
+  alignb 4
+  ROTOR_VI_STEPS:   db  25,12   ; 'AN'
+  alignb 4
+  ROTOR_VII_STEPS:  db  25,12   ; 'AN'
+  alignb 4
+  ROTOR_VIII_STEPS: db  25,12   ; 'AN'
+  alignb 4
+
 
   ROTOR_ARRAYS: dd ROTOR_ARRAY,ROTOR_REV_ARRAY
+  alignb 4
   ROTORS:       dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
+  alignb 4
 
   ROTOR_SEL_IDX                   equ   0
+  alignb 4
   ROTOR_RS_IDX                    equ   1
+  alignb 4
   ROTOR_WP_IDX                    equ   2
+  alignb 4
   ROTOR_STEP1_IDX                 equ   3
+  alignb 4
   ROTOR_STEP2_IDX                 equ   4
-  ERROR_USAGE                     equ   4
+  alignb 4
+  padding_end: db 69,78,68,0,79,70,0,68,65,84,65,88,88,88,88,88
 
 file_size equ $ - $$
-ABSOLUTE $
-  UNIQUENESS_ARRAY: resb 90
 mem_size equ $ - $$
