@@ -497,18 +497,18 @@ _start:
   alignb 4
 
 
+  padding_constants: db 88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88
   ROTOR_ARRAYS: dd ROTOR_ARRAY,ROTOR_REV_ARRAY
   alignb 4
   ROTORS:       dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
   alignb 4
+  padding_end: db 69,78,68,0,79,70,0,68,65,84,65,88,88,88,88,88
 
-  padding_constants: db 88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88
   ROTOR_SEL_IDX                   equ   0
   ROTOR_RS_IDX                    equ   1
   ROTOR_WP_IDX                    equ   2
   ROTOR_STEP1_IDX                 equ   3
   ROTOR_STEP2_IDX                 equ   4
-  padding_end: db 69,78,68,0,79,70,0,68,65,84,65,88,88,88,88,88
 
 file_size equ $ - $$
 mem_size equ $ - $$
