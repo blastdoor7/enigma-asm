@@ -204,6 +204,10 @@ _start:
       call step_rotors
       sub al,65
       call process_char
+      pusha 
+      mov al,32
+      call printchar
+      popa
       add al,65
       call printchar
       popa 
@@ -238,6 +242,9 @@ _start:
     mov ecx,0
     mov edx,8
     call rotor_permute
+    add al,65
+    call printchar
+    sub al,65
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -410,6 +417,7 @@ _start:
   ;     A  ->  Y ->  
   ;     I  ->  P -> III ->  IV  -> V   -> R  -> V  -> IV -> III -> P -> O
   ;     0  -> 24 ->  14  -> 17 ->  0 ->  20 -> 10  -> 15->   8->   15  -> 15 P 
+  ;     A     Y      O      R      A     U     K      P      I     P
   ; forward rotor perms
   align 4
   padding_rI: db 82,79,84,79,82,0,73,0,65,82,82,65,89,88,70,88 
