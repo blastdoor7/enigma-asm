@@ -235,6 +235,9 @@ _start:
   process_char:
     mov bl,byte PLUGBOARD[eax]
     mov al,bl
+    add al,65
+    call printchar
+    sub al,65
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; right rotor
@@ -242,9 +245,6 @@ _start:
     mov ecx,0
     mov edx,8
     call rotor_permute
-    add al,65
-    call printchar
-    sub al,65
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -309,6 +309,7 @@ _start:
     push edx       
     mov dl,byte ecx[eax]  
     mov al,dl
+    ;call printnum
     pop edx       
     call delta_mod_26
     ret
@@ -382,6 +383,43 @@ _start:
     mov byte ROTOR_LEFT[ebx],al
     ret
 
+  ;printnum:
+  ;  push eax
+  ;  push ebx
+  ;  push ecx
+ ; 
+ ;   xor esi,esi
+ ;   xor edx,edx
+;
+;    wind: 
+;      mov edx,0
+;      mov ebx,10
+;      div ebx
+;      add edx,0x30
+;      inc esi
+;      push edx
+;      cmp eax,0
+;      jne wind
+;
+;    unwind:
+;      cmp esi,0
+;      jz  complete
+;      dec esi
+;      mov eax,4
+;      mov ecx,esp
+;      mov ebx,1
+;      mov edx,1
+;      int 0x80
+;      add esp,4
+;      jmp unwind
+;
+;    complete:
+;    pop ecx
+;    pop ebx
+;    pop eax
+;    ret
+  padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+
   exit:
     mov esp,ebp
     pop ebp
@@ -389,10 +427,6 @@ _start:
     mov eax,1
     int 0x80
  
-  padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
-  padding1: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
-  padding2: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
-  padding3: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
 
   ; test value 432 B "AY BX DE FG QZ HP MW RS JV UT" CBA AAA ABCDEFGHIJKLMNOPQRSTUVWXYZ
   ; expected output :  PNORAUPMEWYUIFEZNEHEZWEUBU
