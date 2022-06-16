@@ -297,8 +297,12 @@ _start:
     mov ebx, dword ROTORS[edx]  ; select the rotor state
     push eax
     mov al, byte ebx[ROTOR_SEL_IDX]
+    ;add al,48
+    ;call printchar
+    ;sub al,48
     mov edx,dword ROTOR_ARRAYS[4*ecx]
     mov ecx,dword edx[4*eax]
+    sub al,48
     mov al,byte ebx[ROTOR_WP_IDX]
     mov dl,byte ebx[ROTOR_RS_IDX]
     call delta_mod_26
@@ -309,7 +313,10 @@ _start:
     push edx       
     mov dl,byte ecx[eax]  
     mov al,dl
-    ;call printnum
+    pusha
+    add al,65
+    call printchar
+    popa
     pop edx       
     call delta_mod_26
     ret
@@ -383,7 +390,9 @@ _start:
     mov byte ROTOR_LEFT[ebx],al
     ret
 
-  padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  ;padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+  padding0_b: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+
 
   exit:
     mov esp,ebp
@@ -519,7 +528,6 @@ _start:
   alignb 4
   ROTOR_VIII_STEPS: db  25,12   ; 'AN'
   alignb 4
-
 
   padding_constants: db 88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88
   ROTOR_ARRAYS: dd ROTOR_ARRAY,ROTOR_REV_ARRAY
