@@ -383,42 +383,6 @@ _start:
     mov byte ROTOR_LEFT[ebx],al
     ret
 
-  ;printnum:
-  ;  push eax
-  ;  push ebx
-  ;  push ecx
- ; 
- ;   xor esi,esi
- ;   xor edx,edx
-;
-;    wind: 
-;      mov edx,0
-;      mov ebx,10
-;      div ebx
-;      add edx,0x30
-;      inc esi
-;      push edx
-;      cmp eax,0
-;      jne wind
-;
-;    unwind:
-;      cmp esi,0
-;      jz  complete
-;      dec esi
-;      mov eax,4
-;      mov ecx,esp
-;      mov ebx,1
-;      mov edx,1
-;      int 0x80
-;      add esp,4
-;      jmp unwind
-;
-;    complete:
-;    pop ecx
-;    pop ebx
-;    pop eax
-;    ret
-  ;padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
   padding0: db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
   exit:
