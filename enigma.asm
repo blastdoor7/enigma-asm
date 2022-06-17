@@ -368,7 +368,7 @@ _start:
   REFLECTOR_B_thin: db 4,13,10,16,0,20,24,22,9,8,2,14,15,1,11,12,3,23,25,21,5,19,7,17,6,18
   REFLECTOR_C_thin: db 17,3,14,1,9,13,19,10,21,4,7,12,11,5,2,22,25,0,23,6,24,8,15,18,20,16
 
-  ; forward rotor perms   I - VIII and I - VIII reverse perms - all perms to single array
+  ; the rotor perms   I - VIII and I - VIII reverse perms - all perms to single array
   ROTOR_PERMS:      db 4,10,12,5,11,6,3,16,21,25,13,19,14,22,24,7,23,20,18,15,0,8,1,17,2,9, \
                        0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4, \
                        1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14, \
