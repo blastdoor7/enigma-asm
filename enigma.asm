@@ -212,19 +212,19 @@ _start:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ecx,0
     mov edx,8
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ecx,0
     mov edx,4
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ecx,0
     mov edx,0
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; reflector
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -239,21 +239,21 @@ _start:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ecx,1
+    mov ecx,208
     mov edx,0
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ecx,1
+    mov ecx,208
     mov edx,4
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; right rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ecx,1
+    mov ecx,208
     mov edx,8
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov bl,byte PLUGBOARD[eax]
     mov al,bl
@@ -292,6 +292,8 @@ _start:
       jmp unwind
 
     complete:
+    mov eax,32
+    call printchar
     pop ecx
     pop ebx
     pop eax
@@ -315,6 +317,7 @@ _start:
     mov ebp,esp
     sub esp,4
     mov ebx, dword ROTORS[edx]  ; select the rotor state
+    call printnum
     push eax
     mov al, byte ebx[ROTOR_SEL_IDX]
     pusha
@@ -330,11 +333,10 @@ _start:
     call delta_mod_26
     mov dl,al
     pop eax
-    add eax,edx    ; XXXXXX add eax,edx
+    add eax,edx
     call modulo_26 
     push edx       
     add eax,[ebp-4]
-    call printnum
     mov dl,byte ROTOR_PERMS[eax]  
     mov al,dl
     pop edx       
@@ -358,7 +360,7 @@ _start:
     add al,dl    ; XXXXXX add eax,edx
     call modulo_26 
     push edx       
-    call printnum 
+    ;call printnum 
     mov dl,byte ecx[eax]  
     mov al,dl
     pop edx       
