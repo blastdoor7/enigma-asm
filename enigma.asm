@@ -261,43 +261,6 @@ _start:
     process_char_ret:
     ret
 
-  printnum:
-    push eax
-    push ebx
-    push ecx
-  
-    xor esi,esi
-    xor edx,edx
-
-    wind: 
-      mov edx,0
-      mov ebx,10
-      div ebx
-      add edx,0x30
-      inc esi
-      push edx
-      cmp eax,0
-      jne wind
-
-    unwind:
-      cmp esi,0
-      jz  complete
-      dec esi
-      mov eax,4
-      mov ecx,esp
-      mov ebx,1
-      mov edx,1
-      int 0x80
-      add esp,4
-      jmp unwind
-
-    complete:
-    mov eax,32
-    call printchar
-    pop ecx
-    pop ebx
-    pop eax
-    ret
   ; input A -> Y -> rotor 3 index 25 -> 14 -> 14-1 -> 13-1 -> rotor 4 index 12
   ;              -> 17 -> 17+1 -> 18-2 -> rotor 5 index 16 -> 0 -> 0+2 
   ;              -> reflector index 2 -> 20 -> 20-2 -> rotor 5 rev index 18 -> 10
@@ -324,10 +287,6 @@ _start:
     mul bl   
     mov [ebp-4],eax ; 26 * rotor index
     mov eax,[ebp-4]
-    ;pusha
-    ;add eax,ecx
-    ;call printnum
-    ;popa
     add eax,ecx
     mov [ebp-4],eax   ; eax <- (0 or 1)*8*26 + 26 * rotor index
     popa
@@ -336,10 +295,6 @@ _start:
     call delta_mod_26
     mov dl,al
     pop eax
-    ;pusha
-    ;mov eax,edx
-    ;call printnum
-    ;popa
     add eax,edx
     call modulo_26 
     push edx       
@@ -348,35 +303,10 @@ _start:
     mov eax,edx
     pop edx       
     call delta_mod_26
-    ;pusha
-    ;call printnum
-    ;popa
-    ;call modulo_26 
 
     mov esp,ebp
     pop ebp
   ret
-
-  rotor_permute:
-    mov ebx, dword ROTORS[edx]  ; select the rotor state
-    push eax
-    mov al, byte ebx[ROTOR_SEL_IDX]
-    mov edx,dword ROTOR_ARRAYS[4*ecx]
-    mov ecx,dword edx[4*eax]
-    mov al,byte ebx[ROTOR_WP_IDX]
-    mov dl,byte ebx[ROTOR_RS_IDX]
-    call delta_mod_26
-    mov dl,al
-    pop eax
-    add al,dl    ; XXXXXX add eax,edx
-    call modulo_26 
-    push edx       
-    ;call printnum 
-    mov dl,byte ecx[eax]  
-    mov al,dl
-    pop edx       
-    call delta_mod_26
-    ret
 
   step_rotors:
     push eax
@@ -482,31 +412,11 @@ _start:
                        16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1, \
                        16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14
 
-  ROTOR_I:          db 4,10,12,5,11,6,3,16,21,25,13,19,14,22,24,7,23,20,18,15,0,8,1,17,2,9 
-  ROTOR_II:         db 0,9,3,10,18,8,17,20,23,1,11,7,22,19,12,2,16,6,25,13,15,24,5,21,14,4 
-  ROTOR_III:        db 1,3,5,7,9,11,2,15,17,19,23,21,25,13,24,4,8,22,6,0,10,12,20,18,16,14 
-  ROTOR_IV:         db 4,18,14,21,15,25,9,0,24,16,20,8,17,7,23,11,13,5,19,6,10,3,2,12,22,1 
-  ROTOR_V:          db 21,25,1,17,6,8,19,24,20,15,18,3,13,7,11,23,0,22,12,9,16,14,5,4,2,10 
-  ROTOR_VI:         db 9,15,6,21,14,20,12,5,24,16,1,4,13,7,25,17,3,10,0,18,23,11,8,2,19,22 
-  ROTOR_VII:        db 13,25,9,7,6,17,2,23,12,24,18,22,1,14,20,5,0,8,21,11,15,5,10,16,3,19 
-  ROTOR_VIII:       db 5,10,16,7,19,11,23,14,2,1,9,18,15,3,25,17,0,12,4,22,13,8,20,24,6,21 
-
-  ; reverse rotor perms
-  ROTOR_I_REV:      db 20,22,24,6,0,3,5,15,21,25,1,4,2,10,12,19,7,23,18,11,17,8,13,16,14,9 
-  ROTOR_II_REV:     db 0,9,15,2,25,22,17,11,5,1,3,10,14,19,24,20,16,6,4,13,7,23,12,8,21,18 
-  ROTOR_III_REV:    db 19,0,6,1,15,2,18,3,16,4,20,5,21,13,25,7,24,8,23,9,22,11,17,10,16,12 
-  ROTOR_IV_REV:     db 7,25,22,21,0,17,19,13,11,6,20,15,23,16,2,4,9,12,1,18,10,3,24,16,8,5 
-  ROTOR_V_REV:      db 16,2,24,11,23,22,4,13,5,19,25,16,18,12,21,9,20,3,10,6,8,0,17,15,7,1 
-  ROTOR_VI_REV:     db 18,10,23,16,11,7,2,13,22,0,17,21,6,12,4,1,9,15,19,24,5,3,25,20,8,14 
-  ROTOR_VII_REV:    db 16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1 
-  ROTOR_VIII_REV:   db 16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14
   REFLECTOR_ARRAY: dd REFLECTOR_B, REFLECTOR_C, REFLECTOR_B_thin, REFLECTOR_C_thin
   REFLECTOR_NAME_B:    db 'B'
   REFLECTOR_NAME_C:    db 'C'
   REFLECTOR_NAMES_END: db  0
   REFLECTOR_NAMES: dd REFLECTOR_NAME_B,REFLECTOR_NAME_C,REFLECTOR_NAMES_END
-  ROTOR_ARRAY:     dd ROTOR_I,ROTOR_II,ROTOR_III,ROTOR_IV,ROTOR_V,ROTOR_VI,ROTOR_VII,ROTOR_VIII
-  ROTOR_REV_ARRAY: dd ROTOR_I_REV,ROTOR_II_REV,ROTOR_III_REV,ROTOR_IV_REV,ROTOR_V_REV,ROTOR_VI_REV,ROTOR_VII_REV,ROTOR_VIII_REV
   STEPS_ARRAY:     dd ROTOR_I_STEPS,ROTOR_II_STEPS,ROTOR_III_STEPS,ROTOR_IV_STEPS,ROTOR_V_STEPS,ROTOR_VI_STEPS,ROTOR_VII_STEPS,ROTOR_VIII_STEPS
   ROTOR_RIGHT:  dd 0,0,0,0,0
   ROTOR_MIDDLE: dd 0,0,0,0,0
@@ -520,7 +430,6 @@ _start:
   ROTOR_VI_STEPS:   db  25,12   ; 'AN'
   ROTOR_VII_STEPS:  db  25,12   ; 'AN'
   ROTOR_VIII_STEPS: db  25,12   ; 'AN'
-  ROTOR_ARRAYS: dd ROTOR_ARRAY,ROTOR_REV_ARRAY
   ROTORS:       dd ROTOR_LEFT,ROTOR_MIDDLE,ROTOR_RIGHT
 
   ROTOR_SEL_IDX                   equ   0
