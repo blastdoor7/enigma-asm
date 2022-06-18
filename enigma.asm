@@ -316,15 +316,18 @@ _start:
     push ebp
     mov ebp,esp
     sub esp,4
-    mov ebx, dword ROTORS[edx]  ; select the rotor state
-    call printnum
     push eax
+    mov ebx, dword ROTORS[edx]  ; select the rotor state
     mov al, byte ebx[ROTOR_SEL_IDX]
     pusha
     mov bl,26
     mul bl   
     mov [ebp-4],eax ; 26 * rotor index
     mov eax,[ebp-4]
+    ;pusha
+    ;add eax,ecx
+    ;call printnum
+    ;popa
     add eax,ecx
     mov [ebp-4],eax   ; eax <- (0 or 1)*8*26 + 26 * rotor index
     popa
@@ -333,14 +336,22 @@ _start:
     call delta_mod_26
     mov dl,al
     pop eax
+    ;pusha
+    ;mov eax,edx
+    ;call printnum
+    ;popa
     add eax,edx
     call modulo_26 
     push edx       
     add eax,[ebp-4]
     mov dl,byte ROTOR_PERMS[eax]  
-    mov al,dl
+    mov eax,edx
     pop edx       
     call delta_mod_26
+    ;pusha
+    ;call printnum
+    ;popa
+    ;call modulo_26 
 
     mov esp,ebp
     pop ebp
