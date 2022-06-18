@@ -303,7 +303,7 @@ _start:
   ;              -> 8 -> 8-1 -> plugboard index 7 -> P
 
   ; for single array
-  ; rotor 3 index 25 -> 2*26 + 25 ->  79
+  ; rotor 3 index 25 -> 2*26 + 25 ->  77
   ;       4       12 -> 3*26 + 12 ->  90
   ;       5       16 -> 4*26 + 16 -> 320
   ; rev
