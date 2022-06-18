@@ -212,19 +212,19 @@ _start:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ecx,0
     mov edx,8
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ecx,0
     mov edx,4
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ecx,0
     mov edx,0
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; reflector
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -239,21 +239,21 @@ _start:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; left rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ecx,1
+    mov ecx,208
     mov edx,0
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; middle rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ecx,1
+    mov ecx,208
     mov edx,4
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; right rotor - reverse
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ecx,1
+    mov ecx,208
     mov edx,8
-    call rotor_permute
+    call rotor_permute_block
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov bl,byte PLUGBOARD[eax]
     mov al,bl
@@ -261,13 +261,86 @@ _start:
     process_char_ret:
     ret
 
+  printnum:
+    push eax
+    push ebx
+    push ecx
+  
+    xor esi,esi
+    xor edx,edx
+
+    wind: 
+      mov edx,0
+      mov ebx,10
+      div ebx
+      add edx,0x30
+      inc esi
+      push edx
+      cmp eax,0
+      jne wind
+
+    unwind:
+      cmp esi,0
+      jz  complete
+      dec esi
+      mov eax,4
+      mov ecx,esp
+      mov ebx,1
+      mov edx,1
+      int 0x80
+      add esp,4
+      jmp unwind
+
+    complete:
+    pop ecx
+    pop ebx
+    pop eax
+    ret
+  ; input A -> Y -> rotor 3 index 25 -> 14 -> 14-1 -> 13-1 -> rotor 4 index 12
+  ;              -> 17 -> 17+1 -> 18-2 -> rotor 5 index 16 -> 0 -> 0+2 
+  ;              -> reflector index 2 -> 20 -> 20-2 -> rotor 5 rev index 18 -> 10
+  ;              -> 10+2-1 -> rotor 4 rev index 11 -> 15 -> 15+1+1 -> rotor 3 rev index 17
+  ;              -> 8 -> 8-1 -> plugboard index 7 -> P
+  rotor_permute_block:
+    push ebp
+    mov ebp,esp
+    sub esp,4
+    mov ebx, dword ROTORS[edx]  ; select the rotor state
+    push eax
+    mov al, byte ebx[ROTOR_SEL_IDX]
+    pusha
+    mov bl,26
+    mul bl   
+    mov [ebp-4],eax ; 26 * rotor index
+    mov eax,[ebp-4]
+    add eax,ecx
+    mov [ebp-4],eax   ; eax <- (0 or 1)*8*26 + 26 * rotor index
+    popa
+    mov al,byte ebx[ROTOR_WP_IDX]
+    mov dl,byte ebx[ROTOR_RS_IDX]
+    call delta_mod_26
+    mov dl,al
+    pop eax
+    add eax,edx    ; XXXXXX add eax,edx
+    call modulo_26 
+    push edx       
+    add eax,[ebp-4]
+    call printnum
+    mov dl,byte ROTOR_PERMS[eax]  
+    mov al,dl
+    pop edx       
+    call delta_mod_26
+
+    mov esp,ebp
+    pop ebp
+  ret
+
   rotor_permute:
     mov ebx, dword ROTORS[edx]  ; select the rotor state
     push eax
     mov al, byte ebx[ROTOR_SEL_IDX]
     mov edx,dword ROTOR_ARRAYS[4*ecx]
     mov ecx,dword edx[4*eax]
-    sub al,48
     mov al,byte ebx[ROTOR_WP_IDX]
     mov dl,byte ebx[ROTOR_RS_IDX]
     call delta_mod_26
