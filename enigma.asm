@@ -301,6 +301,15 @@ _start:
   ;              -> reflector index 2 -> 20 -> 20-2 -> rotor 5 rev index 18 -> 10
   ;              -> 10+2-1 -> rotor 4 rev index 11 -> 15 -> 15+1+1 -> rotor 3 rev index 17
   ;              -> 8 -> 8-1 -> plugboard index 7 -> P
+
+  ; for single array
+  ; rotor 3 index 25 -> 2*26 + 25 ->  79
+  ;       4       12 -> 3*26 + 12 ->  90
+  ;       5       16 -> 4*26 + 16 -> 320
+  ; rev
+  ;       5       18 -> 8*26 + 4*26 + 18 -> 322 + 208 -> 530
+  ;       4       11 -> 8*26 + 3*26 + 89 -> 167 + 208 -> 375
+  ;       3       17 -> 8*26 + 2*26 + 17 ->  69 + 208 -> 277
   rotor_permute_block:
     push ebp
     mov ebp,esp
