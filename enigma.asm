@@ -267,6 +267,7 @@ _start:
   ;              -> 10+2-1 -> rotor 4 rev index 11 -> 15 -> 15+1+1 -> rotor 3 rev index 17
   ;              -> 8 -> 8-1 -> plugboard index 7 -> P
 
+
   ; for single array
   ; rotor 3 index 25 -> 2*26 + 25 ->  77
   ;       4       12 -> 3*26 + 12 ->  90
