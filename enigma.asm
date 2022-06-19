@@ -231,9 +231,7 @@ _start:
     ; reflector
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov bl, byte REFLECTOR[0]
-    mov ecx,REFLECTOR_ARRAY[ebx]
     add bl,al
-    ;mov dl,byte ecx[eax] 
     mov dl,byte REFLECTOR_PERMS[eax] 
     mov al,dl      
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -392,11 +390,6 @@ _start:
   ; default - identity, gets configured with supplied plug board
   PLUGBOARD:        db 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
 
-  REFLECTOR_B:      db 24,17,20,7,16,18,11,3,15,23,13,6,14,10,12,8,4,1,5,25,2,22,21,9,0,19
-  REFLECTOR_C:      db 5,21,15,9,8,0,14,24,4,3,17,25,23,22,6,2,19,10,20,16,18,1,13,12,7,11
-  REFLECTOR_B_thin: db 4,13,10,16,0,20,24,22,9,8,2,14,15,1,11,12,3,23,25,21,5,19,7,17,6,18
-  REFLECTOR_C_thin: db 17,3,14,1,9,13,19,10,21,4,7,12,11,5,2,22,25,0,23,6,24,8,15,18,20,16
-
   ; single array for reflector perms
   ; B, C, B_thin, C_thin
   REFLECTOR_PERMS:  db 24,17,20,7,16,18,11,3,15,23,13,6,14,10,12,8,4,1,5,25,2,22,21,9,0,19,0,0 \
@@ -422,7 +415,6 @@ _start:
                        16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1, \
                        16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14
 
-  REFLECTOR_ARRAY: dd REFLECTOR_B, REFLECTOR_C, REFLECTOR_B_thin, REFLECTOR_C_thin
   REFLECTOR_NAME_B:    db 'B'
   REFLECTOR_NAME_C:    db 'C'
   REFLECTOR_NAMES_END: db  0
