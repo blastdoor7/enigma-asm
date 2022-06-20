@@ -151,13 +151,22 @@ _start:
   popa
 
 
-  mov dl,byte ROTOR_III_STEPS[0]
+  mov al,byte ROTOR_RIGHT[ROTOR_SEL_IDX]
+  rol al,1 
+  add al,1
+  mov dl,byte STEPS_ARRAY_[eax]
   mov byte ROTOR_RIGHT[ROTOR_STEP1_IDX],dl
 
-  mov dl,byte ROTOR_IV_STEPS[0]
+  mov al,byte ROTOR_MIDDLE[ROTOR_SEL_IDX]
+  rol al,1 
+  add al,1
+  mov dl,byte STEPS_ARRAY_[eax]
   mov byte ROTOR_MIDDLE[ROTOR_STEP1_IDX],dl
 
-  mov dl,byte ROTOR_V_STEPS[0]
+  mov al,byte ROTOR_LEFT[ROTOR_SEL_IDX]
+  rol al,1 
+  add al,1
+  mov dl,byte STEPS_ARRAY_[eax]
   mov byte ROTOR_LEFT[ROTOR_STEP1_IDX],dl
 
   mov dword ROTOR_RIGHT[ROTOR_STEP2_IDX],-1
@@ -417,6 +426,16 @@ _start:
 
   REFLECTOR_NAMES: db 'B','C',0
   STEPS_ARRAY:     dd ROTOR_I_STEPS,ROTOR_II_STEPS,ROTOR_III_STEPS,ROTOR_IV_STEPS,ROTOR_V_STEPS,ROTOR_VI_STEPS,ROTOR_VII_STEPS,ROTOR_VIII_STEPS
+  ;R,	I
+  ;F,	II
+  ;W,	III  i.e. 'W'   'V' -> 'W' step with change to 'W'
+  ;K,	IV
+  ;A,	V
+  ;AN,	VI
+  ;AN,	VII
+  ;AN	VIII
+  STEPS_ARRAY_: db  0,16,0,4,0,21,0,9,0,25,25,12,25,12,25,12
+
   ROTOR_RIGHT:  dd 0,0,0,0,0
   ROTOR_MIDDLE: dd 0,0,0,0,0
   ROTOR_LEFT:   dd 0,0,0,0,0  
