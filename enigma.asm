@@ -150,7 +150,6 @@ _start:
   config_reflector_loop_break:
   popa
 
-
   mov al,byte ROTOR_RIGHT[ROTOR_SEL_IDX]
   rol al,1 
   inc al
@@ -178,8 +177,6 @@ _start:
   mov ecx,[ebp-4]
   call process_input
   jmp exit
-
-
 
   process_input:
     xor edx,edx
