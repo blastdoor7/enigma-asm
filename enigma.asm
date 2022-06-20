@@ -280,8 +280,8 @@ _start:
     mov ebp,esp
     sub esp,4
     push eax
-    mov ebx, dword ROTORS[edx]  ; select the rotor state
-    mov al, byte ebx[ROTOR_SEL_IDX]
+    mov ebx,dword ROTORS[edx]  ; select the rotor state
+    mov al,byte ebx[ROTOR_SEL_IDX]
     pusha
     mov bl,26
     mul bl   
