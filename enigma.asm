@@ -153,19 +153,19 @@ _start:
 
   mov al,byte ROTOR_RIGHT[ROTOR_SEL_IDX]
   rol al,1 
-  add al,1
+  inc al
   mov dl,byte STEPS_ARRAY[eax]
   mov byte ROTOR_RIGHT[ROTOR_STEP1_IDX],dl
 
   mov al,byte ROTOR_MIDDLE[ROTOR_SEL_IDX]
   rol al,1 
-  add al,1
+  inc al
   mov dl,byte STEPS_ARRAY[eax]
   mov byte ROTOR_MIDDLE[ROTOR_STEP1_IDX],dl
 
   mov al,byte ROTOR_LEFT[ROTOR_SEL_IDX]
   rol al,1 
-  add al,1
+  inc al
   mov dl,byte STEPS_ARRAY[eax]
   mov byte ROTOR_LEFT[ROTOR_STEP1_IDX],dl
 
