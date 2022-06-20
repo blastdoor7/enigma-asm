@@ -357,18 +357,13 @@ _start:
     ret
 
   printchar:
-    pusha
-    mov ebp,esp
-    sub esp,4
-    mov byte [ebp-4],al
-    lea edx,[ebp-4]
-    mov ecx,edx 
+    push eax
+    mov ecx,esp 
+    pop eax
     mov ebx,1
     mov edx,1
     mov eax,4
     int 0x80
-    mov esp,ebp
-    popa
     ret
 
   configure_rotors:
