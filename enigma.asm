@@ -137,9 +137,9 @@ _start:
   xor edx,edx
   config_reflector_loop:
     mov ecx,REFLECTOR_NAMES[edx]
-    cmp al,byte ecx[0] 
+    cmp al,cl
     je set_reflector
-    add edx,4
+    add edx,1
     jmp config_reflector_loop
 
   set_reflector:
@@ -415,10 +415,7 @@ _start:
                        16,12,6,24,21,15,4,3,17,2,22,19,8,0,13,20,23,5,10,25,14,18,11,7,9,1, \
                        16,9,8,13,18,0,24,3,21,10,1,5,17,20,7,12,2,15,11,4,22,25,19,6,23,14
 
-  REFLECTOR_NAME_B:    db 'B'
-  REFLECTOR_NAME_C:    db 'C'
-  REFLECTOR_NAMES_END: db  0
-  REFLECTOR_NAMES: dd REFLECTOR_NAME_B,REFLECTOR_NAME_C,REFLECTOR_NAMES_END
+  REFLECTOR_NAMES: db 'B','C',0
   STEPS_ARRAY:     dd ROTOR_I_STEPS,ROTOR_II_STEPS,ROTOR_III_STEPS,ROTOR_IV_STEPS,ROTOR_V_STEPS,ROTOR_VI_STEPS,ROTOR_VII_STEPS,ROTOR_VIII_STEPS
   ROTOR_RIGHT:  dd 0,0,0,0,0
   ROTOR_MIDDLE: dd 0,0,0,0,0
